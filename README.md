@@ -1,12 +1,8 @@
 # Keycloak Login (BFF Pattern)
 
-## Arquitetura
+## Sobre
 
-```
-Browser (React :5173) → proxy /auth → BFF (Express :3001) → Keycloak (:8080)
-```
-
-O **token nunca chega ao browser**. O BFF guarda o token em memória e envia apenas um cookie `session_id` httpOnly signed.
+Projeto de estudo que implementa autenticação com Keycloak usando o padrão **BFF (Backend for Frontend)**. O token nunca chega ao browser — o BFF (Express) se comunica com o Keycloak, guarda os tokens em memória e devolve apenas um cookie `session_id` httpOnly signed para o frontend (React).
 
 ---
 
@@ -26,7 +22,7 @@ O **token nunca chega ao browser**. O BFF guarda o token em memória e envia ape
 
 ### 2. Primeiro Login (Troca de Senha Obrigatória)
 
-![Fluxo de Primeiro Login](images/firt-login.png)
+![Fluxo de Primeiro Login](images/first-login.png)
 
 **Detalhes:**
 - Quando o Keycloak tem `UPDATE_PASSWORD` como required action no usuário, o Direct Grant falha com `"Account is not fully set up"`
