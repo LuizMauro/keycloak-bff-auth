@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { sessions } from "../sessions";
+import { deleteSession } from "../sessions";
 
 const router = Router();
 
-router.post("/logout", (req, res) => {
+router.post("/logout", async (req, res) => {
   const sid = req.signedCookies.session_id;
-  if (sid) sessions.delete(sid);
+  if (sid) await deleteSession(sid);
   res.clearCookie("session_id");
   res.json({ ok: true });
 });

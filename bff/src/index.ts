@@ -9,6 +9,7 @@ import logoutRoute from "./routes/logout";
 import changePasswordRoute from "./routes/changePassword";
 import forgotPasswordRoute from "./routes/forgotPassword";
 import resetPasswordRoute from "./routes/resetPassword";
+import notificationsRoute from "./routes/notifications";
 
 const app = express();
 
@@ -22,5 +23,6 @@ app.use("/auth", logoutRoute);
 app.use("/auth", changePasswordRoute);
 app.use("/auth", forgotPasswordRoute);
 app.use("/auth", resetPasswordRoute);
+app.use("/auth", notificationsRoute);
 
 app.listen(Number(PORT), () => console.log(`BFF running on http://localhost:${PORT}`));

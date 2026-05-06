@@ -41,7 +41,7 @@ router.post("/change-password", async (req, res) => {
 
     if (!login.ok) return res.status(500).json({ error: "Failed to login after password change" });
 
-    createSession(res, login.data.access_token, login.data.refresh_token);
+    await createSession(res, login.data.access_token, login.data.refresh_token);
     res.json({ ok: true });
   } catch {
     res.status(500).json({ error: "Keycloak unreachable" });

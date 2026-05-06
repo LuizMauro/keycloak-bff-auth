@@ -5,7 +5,17 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/auth": "http://localhost:3001",
+      "/auth": {
+        target: "http://localhost:3001",
+        configure: (proxy) => {
+          proxy.on("proxyRes", (proxyRes, req) => {
+            if (req.url?.includes("/notifications")) {
+              proxyRes.headers["cache-control"] = "no-cache";
+              proxyRes.headers["content-type"] = "text/event-stream";
+            }
+          });
+        },
+      },
     },
   },
 });

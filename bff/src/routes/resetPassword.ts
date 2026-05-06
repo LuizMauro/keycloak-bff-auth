@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET } from "../config";
 import { requestToken, getAdminToken, resetUserPassword, clearRequiredActions } from "../keycloak";
-import { createSession, resetCodes } from "../sessions";
+import { createSession, getResetCode, deleteResetCode } from "../sessions";
 
 const router = Router();
 
@@ -9,17 +9,14 @@ router.post("/reset-password", async (req, res) => {
   const { code, newPassword } = req.body;
   if (!code || !newPassword) return res.status(400).json({ error: "Missing fields" });
 
-  const entry = resetCodes.get(code);
-  if (!entry || entry.expiresAt < Date.now()) {
-    resetCodes.delete(code);
-    return res.status(400).json({ error: "Invalid or expired code" });
-  }
+  const entry = await getResetCode(code);
+  if (!entry) return res.status(400).json({ error: "Invalid or expired code" });
 
   try {
     const adminToken = await getAdminToken();
     await resetUserPassword(adminToken, entry.userId, newPassword);
     await clearRequiredActions(adminToken, entry.userId);
-    resetCodes.delete(code);
+    await deleteResetCode(code);
 
     const login = await requestToken({
       grant_type: "password",
@@ -32,7 +29,7 @@ router.post("/reset-password", async (req, res) => {
 
     if (!login.ok) return res.json({ ok: true, autoLogin: false });
 
-    createSession(res, login.data.access_token, login.data.refresh_token);
+    await createSession(res, login.data.access_token, login.data.refresh_token);
     res.json({ ok: true, autoLogin: true });
   } catch {
     res.status(500).json({ error: "Keycloak unreachable" });

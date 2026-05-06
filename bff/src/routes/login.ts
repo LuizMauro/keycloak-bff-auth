@@ -20,7 +20,7 @@ router.post("/login", async (req, res) => {
     });
 
     if (ok) {
-      createSession(res, data.access_token, data.refresh_token);
+      await createSession(res, data.access_token, data.refresh_token);
       return res.json({ ok: true });
     }
 

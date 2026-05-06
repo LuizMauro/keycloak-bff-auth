@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { USERINFO_URL } from "../config";
-import { sessions } from "../sessions";
+import { getSession } from "../sessions";
 
 const router = Router();
 
 router.get("/me", async (req, res) => {
-  const session = sessions.get(req.signedCookies.session_id);
+  const session = await getSession(req.signedCookies.session_id);
   if (!session) return res.status(401).json({ authenticated: false });
 
   try {

@@ -6,6 +6,7 @@ export const {
   SESSION_SECRET = "super-secret",
   FRONTEND_URL = "http://localhost:5173",
   PORT = "3001",
+  REDIS_URL = "redis://localhost:6379",
 } = process.env;
 
 export const TOKEN_URL = `${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`;

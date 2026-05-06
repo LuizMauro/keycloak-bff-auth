@@ -1,9 +1,19 @@
-import { Box, Button, Code, Heading, VStack, Avatar, Text } from "@chakra-ui/react";
+import { Box, Button, Code, Heading, VStack, Avatar, Text, useToast } from "@chakra-ui/react";
 import { useAuth } from "../hooks/useAuth";
+import { useSSE } from "../hooks/useSSE";
 import { Navigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function HomePage() {
   const { user, loading, logout } = useAuth();
+  const notifications = useSSE(!!user);
+  const toast = useToast();
+
+  useEffect(() => {
+    if (notifications.length === 0) return;
+    const last = notifications[notifications.length - 1];
+    toast({ title: "Notificação", description: last.message, status: "info", duration: 5000, isClosable: true });
+  }, [notifications.length]);
 
   if (loading) return null;
   if (!user) return <Navigate to="/login" />;
